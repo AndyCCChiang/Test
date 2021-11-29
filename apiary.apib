@@ -1,0 +1,112 @@
+FORMAT: 1A
+
+
+# OPT_PSO
++ class OPT_PSO(all_feature=False,
+              greater=False,
+              yInput=0,
+              abs_y=False)
+              
+              
+Use PSO to find the recommended setting range of key features.
+
+## Parameters 
+
+    + all_feature: bool, default=`True`
+    
+        Whether to use all features for modeling.
+
++ yInput: int, default=`1`
+
+        The classification or the regression: either 0 or 1.
+
++ greater: bool, default=`False`
+
+        Whether y is a defect ratio (default), meaning low is good, or a OK ratio, meaning high is good.
+
++ abs_y: bool, default=`False`
+
+        Determine whether y needs to take the absolute value.
+        
+## Attributes 
+    + all_feature: bool, default=`True`
+    
+        Whether to use all features for modeling.
+
++ yInput: int, default=`1`
+
+        The classification or the regression: either 0 or 1.
+
++ greater: bool, default=`False`
+
+        Whether y is a defect ratio (default), meaning low is good, or a OK ratio, meaning high is good.
+
++ abs_y: bool, default=`False`
+
+        Determine whether y needs to take the absolute value.
+
++ xgb_model: estimator, default=`XGBRegressor(random_state = 11850)`
+
+        The base estimator of XGBRegressor which the random state is 11850.
+    
++ PSO_options: dict with keys={'c1': 2, 'c2': 2, 'w':0.5}
+
+        The dictionary containing the parameters for the specific optimization technique.
+        
+    + c1: float, default=`2`
+    
+            Cognitive parameter.
+    
+    + c2: float, default=`2`
+    
+            Social parameter.
+
+    + w: float, default=`0.5`
+    
+            Inertia parameter.
+
+## Method 
+
+### feature_spec
+
+Calculate the ng ratio in each value of key feature, and show five recommended range of key feature. The result is recorded in self.spec and provided to function run.
++ Parameters: None
+
++ Returns: None
+
+### fitness
+
+Create a model to predict y value(probability) for combination of feature(x combination).
+
++ Parameters
+    + x: array of shape n_particles and number of feature
+    
+            The particle swarm.
+
++ Returns
+    + y_pred: array of shape n_particles
+    
+            The prediction result of each combination.
+
+
+### run
+
+Choose the range of each key feature in self.spec which include the result of OPT.
+
++ Parameters
+    + data_frame: dataframe(pandas)
+    
+            After data pre-processing, but not yet standardized.
+    
+    + key_feature: list
+    
+            The key features of the model.
+            
+    + y_column_name: str
+    
+            The colume of y in data_frame.
+
++ Returns
+    + final_recommand: list
+    
+            Recommended setting range of key features.
