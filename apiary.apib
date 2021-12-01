@@ -2,12 +2,16 @@ FORMAT: 1A
 
 
 # GoldenPath
-+ class GoldenPath(SputterTarget, plotpath)
++ class GoldenPath(file_path, sputter_target, plotpath)
 
 Find the golden path and infernal path for machine based on sequential ANOVA.
 
 ## Parameters 
 
++ **file_path: str**
+
+        Set the file path.
+    
 + **SputterTarget: str, default=`'CU'`**
     
         Choose the sputter target in PEP1. Possible options are the abbreviation of sputter target name in the 'TAR' column or 'ALL'.
@@ -17,13 +21,6 @@ Find the golden path and infernal path for machine based on sequential ANOVA.
         Choose the type of path presentation. Possible options are 'Golden', 'Infernal', 'Both'. If plotpath is 'Golden', then only visualize the golden path; Alternatively, if plotpath is 'Infernal', then only visualize the infernal path. If plotpath is 'Both', visualize the both paths.
         
 ## Attributes 
-+ **SputterTarget: str, default=`'CU'`**
-    
-        Choose the sputter target in PEP1. Possible options are the abbreviation of sputter target name in the 'TAR' column or 'ALL'.
-
-+ **plotpath: str, default=`'Both'`**
-
-        Choose the type of path presentation. Possible options are 'Golden', 'Infernal', 'Both'. If plotpath is 'Golden', then only visualize the golden path; Alternatively, if plotpath is 'Infernal', then only visualize the infernal path. If plotpath is 'Both', visualize the both paths.
 
 + **TotalGoldenPath: dict**
 
@@ -33,10 +30,32 @@ Find the golden path and infernal path for machine based on sequential ANOVA.
 
         List infernal machine under significant operators based on sequential ANOVA. If linear model coefficient of all machine under significant operators are positive, then list the baseline machine based on domain knowledge.
 
-+ **TotalSummaryTable: DataFrame**
-
-        List summary table of all machine under significant operators based on sequential ANOVA.
-    
 + **TotalSummaryDict: dict**
 
         List summary table of all machine under significant operators based on sequential ANOVA.
+
+## Returns
+
++ **PEP1_Sankey Plot**
+
+        Visualize the parameters setting above in PEP1 with sankey plot.
+
++ **PEP1_Network Plot**
+
+        Visualize the parameters setting above in PEP1 with network plot.
+        
++ **PEP23_Sankey Plot**
+
+        Visualize the parameters setting above in PEP23 with sankey plot.
+        
++ **PEP23_Network Plot**
+
+        Visualize the parameters setting above in PEP23 with network plot.
+        
++ **PEP45_Sankey Plot**
+
+        Visualize the parameters setting above in PEP45 with sankey plot.
+        
++ **PEP45_Network Plot**
+
+        Visualize the parameters setting above in PEP45 with network plot.
