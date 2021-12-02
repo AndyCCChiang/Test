@@ -1,8 +1,8 @@
 FORMAT: 1A
 
 
-# GoldenPath
-+ class GoldenPath(file_path, sputter_target, plotpath)
+# golden_path
++ class GoldenPath(file_path, sputter_target, visualization_path)
 
 Find the golden path and infernal path for machine based on sequential ANOVA.
 
@@ -10,13 +10,13 @@ Find the golden path and infernal path for machine based on sequential ANOVA.
 
 + **file_path: str**
 
-        Set the file path.
-    
-+ **SputterTarget: str, default=`'CU'`**
+        Set the file path where the data placed.
+
++ **sputter_target: str, default=`'CU'`**
     
         Choose the sputter target in PEP1. Possible options are the abbreviation of sputter target name in the 'TAR' column or 'ALL'.
 
-+ **plotpath: str, default=`'Both'`**
++ **visualization_path: str, default=`'Both'`**
 
         Choose the type of path presentation. Possible options are 'Golden', 'Infernal', 'Both'. If plotpath is 'Golden', then only visualize the golden path; Alternatively, if plotpath is 'Infernal', then only visualize the infernal path. If plotpath is 'Both', visualize the both paths.
         
@@ -33,29 +33,29 @@ Find the golden path and infernal path for machine based on sequential ANOVA.
 + **TotalSummaryDict: dict**
 
         List summary table of all machine under significant operators based on sequential ANOVA.
-
+        
 ## Returns
 
-+ **PEP1_Sankey Plot: HTML**
-
-        Visualize the parameters setting above in PEP1 with sankey plot.
-
-+ **PEP1_Network Plot: HTML**
-
-        Visualize the parameters setting above in PEP1 with network plot.
++ **PEP1 Sankey Plot**
         
-+ **PEP23_Sankey Plot: HTML**
-
-        Visualize the parameters setting above in PEP23 with sankey plot.
+        Visualize the input setting in PEP1 with sankey plot. 
+         
++ **PEP1 Network Plot**
         
-+ **PEP23_Network Plot: HTML**
-
-        Visualize the parameters setting above in PEP23 with network plot.
+        Visualize the input setting in PEP1 with network plot.        
         
-+ **PEP45_Sankey Plot: HTML**
-
-        Visualize the parameters setting above in PEP45 with sankey plot.
++ **PEP23 Sankey Plot**
         
-+ **PEP45_Network Plot: HTML**
-
-        Visualize the parameters setting above in PEP45 with network plot.
+        Visualize the input setting in PEP23 with sankey plot.        
+        
++ **PEP23 Network Plot**
+        
+        Visualize the input setting in PEP23 with network plot. 
+ 
++ **PEP45 Sankey Plot**
+        
+        Visualize the input setting in PEP45 with sankey plot. 
+ 
++ **PEP45 Network Plot**
+        
+        Visualize the input setting in PEP45 with network plot.
