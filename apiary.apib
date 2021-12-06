@@ -1,61 +1,116 @@
 FORMAT: 1A
 
+# Data Wrangling: Pandas vs. Pyspark DataFrame
+    +   This basic introduction is to compare common data wrangling methods in pyspark and pandas data frame with a concrete example. 
+        Here, I used US counties' COVID-19 dataset to show the data wrangling differences between these two types of data frames. 
+        The dataset can be downloaded from Kaggle Dataset (https://www.kaggle.com/fireballbyedimyrnmom/us-counties-covid-19-dataset). 
+        This should allow you to get started with data manipulation and analysis under both pandas and spark. 
+        Specific objectives are to show you how to:
+        Load data from local files
 
-# golden_path
-+ class GoldenPath(file_path, sputter_target, visualization_path)
+# Download sample data (covid-19-data/us-counties.csv) from internet
+%sh wget https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv -O /databricks/driver/us-counties.csv
 
-Find the golden path and infernal path for machine based on sequential ANOVA.
+import pandas as pd 
+#import findspark
+#findspark.init('/opt/spark')
 
-## Parameters 
+import pyspark
+import random
+#from pyspark import SparkContext, SparkConf, SQLContext
+#from pyspark.sql import SparkSession
 
-+ **file_path: str**
+from pyspark.sql.functions import udf 
+from pyspark.sql.types import StructField,IntegerType, StructType,StringType, FloatType
+from pyspark.sql.functions import desc 
+from pyspark.sql.functions import asc 
+import pyspark.sql.functions as F 
+import numpy as np
+from pyspark.sql import Window
+from pyspark.sql.functions import isnan, when, count, col
+from pyspark.sql.types import DateType
+from pyspark.sql.functions import *
 
-        Set the file path where the data placed.
+# Load data from local files
+# Pandas 
+df = pd.read_csv(local_file)
 
-+ **sputter_target: str, default=`'CU'`**
-    
-        Choose the sputter target in PEP1. Possible options are the abbreviation of sputter target name in the 'TAR' column or 'ALL'.
+# Pyspark 
+df_s = spark.read.csv(dbfs_file,header = True)
 
-+ **visualization_path: str, default=`'Both'`**
+# Display the schema of the DataFrame
+## pandas 
+print(df.dtypes)
 
-        Choose the type of path presentation. Possible options are 'Golden', 'Infernal', 'Both'. If plotpath is 'Golden', then only visualize the golden path; Alternatively, if plotpath is 'Infernal', then only visualize the infernal path. If plotpath is 'Both', visualize the both paths.
-        
-## Attributes 
+## pyspark 
+print(df_s.printSchema())
+df
 
-+ **TotalGoldenPath: dict**
+# Change the Data Types when Importing the Data
+# When we check the data types above, we found that the cases and deaths need to be converted to numerical values instead of string format. Here is the way how we can change the data types when importing the data in pandas and spark.
 
-        List golden machine under significant operators based on sequential ANOVA. If linear model coefficient of all machine under significant operators are negative, then list the baseline machine based on domain knowledge.
+# pandas : aim to reduce memory size 
 
-+ **TotalInfernalPath: dict**
+types = {'date': 'object', 'county': 'object', 
+         'state': 'object', 'fips': 'float',
+         'cases': pd.Int64Dtype(), 'deaths': pd.Int64Dtype()}
 
-        List infernal machine under significant operators based on sequential ANOVA. If linear model coefficient of all machine under significant operators are positive, then list the baseline machine based on domain knowledge.
+df = pd.read_csv(local_file, usecols=types.keys(), dtype=types)
+#df = pd.read_csv(dbfs_file, usecols=types.keys(), dtype=types)
 
-+ **TotalSummaryDict: dict**
+# pyspark 
+newDF=[StructField('date',StringType(),True),
+       StructField('county',StringType(),True),
+       StructField('state',StringType(),True),
+       StructField('fips',FloatType(),True),
+       StructField('cases',IntegerType(),True),
+       StructField('deaths',IntegerType(),True)
+       ]
+finalStruct=StructType(fields=newDF)
+df_s = spark.read.csv(dbfs_file,header = True,schema=finalStruct)
+df_s.printSchema()
 
-        List summary table of all machine under significant operators based on sequential ANOVA.
-        
-## Returns
+print(df.info(memory_usage='deep'))
 
-+ **PEP1 Sankey Plot**
-        
-        Visualize the input setting in PEP1 with sankey plot. 
-         
-+ **PEP1 Network Plot**
-        
-        Visualize the input setting in PEP1 with network plot.        
-        
-+ **PEP23 Sankey Plot**
-        
-        Visualize the input setting in PEP23 with sankey plot.        
-        
-+ **PEP23 Network Plot**
-        
-        Visualize the input setting in PEP23 with network plot. 
+print(df_s.rdd.getNumPartitions())
+
+# %md ###[Data Files, File Split, Partition](https://medium.com/swlh/building-part ...
+
+# Show the head of the DataFrame
+
+# pandas 
+df.head()
+
+# pyspark 
+df_s.show(5)
+
+df_s.take(5)
  
-+ **PEP45 Sankey Plot**
-        
-        Visualize the input setting in PEP45 with sankey plot. 
- 
-+ **PEP45 Network Plot**
-        
-        Visualize the input setting in PEP45 with network plot.
+# In pyspark, take() and show() are different. show() prints results, take() returns a list of rows (in PySpark) and can be used to create a new dataframe. They are both actions.
+
+display(df_s)
+
+# Select Columns from the DataFrame
+
+## Pandas 
+df[['state','cases']].head()
+
+## pyspark 
+df_s.select('state','cases').show(5)
+
+# Show the Statistics of the DataFrame
+
+# pandas 
+df.describe() # show the stats for all numerical columns 
+df['cases'].describe() # show the stats for a specific column
+
+# pyspark 
+df_s.describe().show() #pyspark can show stats for all columns but it may contain missing values 
+df_s.describe('cases').show() # show the stats for a specific column
+
+# Drop Duplicates
+# pandas 
+df.state.drop_duplicates().head()
+
+# pyspark 
+df_s.select('state').dropDuplicates().show(5)
